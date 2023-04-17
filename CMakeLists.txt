@@ -4,6 +4,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories("${CMAKE_SOURCE_DIR}/include/")
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static")
+endif()
+
 add_executable(${PROJECT_NAME}
   src/handle/handle.cpp
   src/main.cpp
