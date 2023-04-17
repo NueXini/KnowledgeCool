@@ -36,8 +36,27 @@ void Handle::PrintLog(const httplib::Request &req)
 
 void Handle::baidu(const httplib::Request &req, httplib::Response &res)
 {
+  // API
+  // https://eduai.baidu.com/api/zyk/download?docId=81cb83b1360cba1aa911da1a&source_from=eduai&fr=4
   PrintLog(req);
-  res.set_content("OK", "text/plain");
+  if (req.has_param("id"))
+  {
+    auto id = req.get_param_value("id");
+    if (id != "")
+    {
+      if (req.has_header("Cookie"))
+      {
+        auto ck = req.get_header_value("Cookie");
+        httplib::Headers headers = {{"User-Agent", UserAgent}, {"Cookie", ck}, {"Refer", "https://eduai.baidu.com/view/" + id}};
+        httplib::Client _cli("https://eduai.baidu.com");
+        auto _res = _cli.Get("/api/zyk/download?docId=" + id + "&source_from=eduai&fr=4", headers);
+        if (_res && _res->status == 200)
+        {
+          res.set_content(_res->body, "text/plain");
+        }
+      }
+    }
+  }
 }
 
 void Handle::yfzxmn(const httplib::Request &req, httplib::Response &res)
