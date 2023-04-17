@@ -12,6 +12,8 @@
 
 - [OpenSSL](https://github.com/openssl/openssl)
 
+- [rapidjson](https://github.com/Tencent/rapidjson)
+
 # License
 
 KnowledgeCool is licensed under the GNU General Public License v3.0
