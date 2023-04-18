@@ -47,7 +47,7 @@ void Handle::baidu(const httplib::Request &req, httplib::Response &res)
       if (req.has_header("Cookie"))
       {
         auto ck = req.get_header_value("Cookie");
-        httplib::Headers headers = {{"User-Agent", UserAgent}, {"Cookie", ck}, {"Refer", "https://eduai.baidu.com/view/" + id}};
+        httplib::Headers headers = {{"User-Agent", UserAgent}, {"Cookie", ck}, {"Referer", "https://eduai.baidu.com/view/" + id}};
         httplib::Client _cli("https://eduai.baidu.com");
         auto _res = _cli.Get("/api/zyk/download?docId=" + id + "&source_from=eduai&fr=4", headers);
         if (_res && _res->status == 200)
