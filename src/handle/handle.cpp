@@ -26,11 +26,10 @@ void Handle::PrintLog(const httplib::Request &req)
         std::cout << "&";
       }
     }
-    std::cout << " ";
   }
 
   // Log user agent and remote IP address
-  std::cout << req.get_header_value("User-Agent") << " "
+  std::cout << " " << req.get_header_value("User-Agent") << " "
             << req.remote_addr << std::endl;
 }
 
@@ -64,24 +63,49 @@ void Handle::yfzxmn(const httplib::Request &req, httplib::Response &res)
   // API
   // https://www.yfzxmn.cn/download.action?su_Id=2&ex_Id=25480
   PrintLog(req);
-  if (req.has_param("id"))
+  if (req.has_param("type"))
   {
-    auto id = req.get_param_value("id");
-    if (id != "")
+    auto type = req.get_param_value("type");
+    httplib::Client _cli("https://www.yfzxmn.cn");
+    // type=download&id=
+    if (type == "download")
     {
-      if (req.has_header("Cookie"))
+      if (req.has_param("id"))
       {
-        auto ck = req.get_header_value("Cookie");
-        httplib::Headers headers = {{"User-Agent", UserAgent}, {"Cookie", ck}};
-        httplib::Client _cli("https://www.yfzxmn.cn");
-        auto _res = _cli.Get("/download.action?su_Id=2&ex_Id=" + id, headers);
-        if (_res && _res->status == 200)
+        auto id = req.get_param_value("id");
+        if (id != "")
         {
-          std::smatch result;
-          std::string pattern = R"(.*href=\"(.*)\">)";
-          if (std::regex_search(_res->body, result, std::regex(pattern)))
+          if (req.has_header("Cookie"))
           {
-            res.set_content(result[1].str(), "text/plain");
+            auto ck = req.get_header_value("Cookie");
+            httplib::Headers headers = {{"User-Agent", UserAgent}, {"Cookie", ck}};
+            auto _res = _cli.Get("/download.action?su_Id=2&ex_Id=" + id, headers);
+            if (_res && _res->status == 200)
+            {
+              std::smatch result;
+              std::string pattern = R"(.*href=\"(.*)\">)";
+              if (std::regex_search(_res->body, result, std::regex(pattern)))
+              {
+                res.set_content(result[1].str(), "text/plain");
+              }
+            }
+          }
+        }
+      }
+    }
+    // type=getsmscode&phone=
+    if (type == "getsmscode")
+    {
+      if (req.has_param("phone"))
+      {
+        auto phone = req.get_param_value("phone");
+        if (std::regex_match(phone, std::regex(R"(^1[3456789]\d{9}$)")))
+        {
+          httplib::Headers headers = {{"User-Agent", UserAgent}};
+          auto _res = _cli.Get("/user_checkUsTel.action?usertab.us_tel=" + phone, headers);
+          if (_res && _res->status == 200)
+          {
+            res.set_content(_res->body, "text/plain");
           }
         }
       }
