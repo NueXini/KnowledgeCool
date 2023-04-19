@@ -7,14 +7,17 @@ int main(int argc, char *argv[])
 {
   try
   {
-    /* code */
-
 #ifdef _DEBUG
     for (size_t i = 0; i < argc; i++)
     {
       std::cout << argv[i] << std::endl;
     }
 #endif // _DEBUG
+
+    std::string ip = "127.0.0.1";
+    size_t port = 9999;
+
+    std::cout << "Linstening " << ip << ":" << port << "\n";
 
     // Handle
     Handle hdl;
@@ -28,7 +31,7 @@ int main(int argc, char *argv[])
     svr.Post("/api/baidu", httplib::Server::Handler(callback_api_baidu));
     svr.Post("/api/yfzxmn", httplib::Server::Handler(callback_api_yfzxmn));
 
-    svr.listen("127.0.0.1", 9999);
+    svr.listen(ip, port);
 
     return 0;
   }
