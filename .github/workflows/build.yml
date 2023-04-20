@@ -20,12 +20,12 @@ jobs:
           - {
               name: linux_ARMv7,
               c_compiler: gcc-12-arm-linux-gnueabihf,
-              cxxcompiler: g++-12-arm-linux-gnueabihf,
+              cxx_compiler: g++-12-arm-linux-gnueabihf,
             }
           - {
               name: linux_ARMv8,
               c_compiler: gcc-12-aarch64-linux-gnu,
-              cxxcompiler: g++-12-aarch64-linux-gnu,
+              cxx_compiler: g++-12-aarch64-linux-gnu,
             }
 
     steps:
