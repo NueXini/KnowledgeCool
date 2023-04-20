@@ -2,7 +2,6 @@ name: Build
 
 on:
   push:
-    branches: [master]
   pull_request:
     paths-ignore:
       - "**.md"
@@ -20,8 +19,8 @@ jobs:
         config:
           - {
               name: linux_ARMv7,
-              c_compiler: gcc-arm-linux-gnueabihf,
-              cxxcompiler: g++-arm-linux-gnueabihf,
+              c_compiler: gcc-12-arm-linux-gnueabihf,
+              cxxcompiler: g++-12-arm-linux-gnueabihf,
             }
           - {
               name: linux_ARMv8,
@@ -45,5 +44,5 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+          cmake .. -DCMAKE_C_COMPILER=${{ matrix.config.c_compiler }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx_compiler }} -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
           make
