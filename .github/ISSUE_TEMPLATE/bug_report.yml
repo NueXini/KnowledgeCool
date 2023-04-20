@@ -1,0 +1,37 @@
+name: Bug 反馈
+description: 功能运行不正常 / 失效
+title: "[BUG] <title>"
+body:
+  - type: checkboxes
+    id: version-check
+    attributes:
+      label: 确认版本最新
+      description: 对于您遇到的BUG, 是否尝试在最新版本中复现?
+      options:
+        - label: 我已经确认在最新版本中复现
+          required: true
+  - type: checkboxes
+    id: issue-check
+    attributes:
+      label: 检索issue
+      description: 对于您遇到的BUG, 是否已经确认之前没有其他issue涉及?
+      options:
+        - label: 我已经确认之前没有issue涉及此BUG
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 复现步骤
+      description: BUG的详细复现步骤
+      placeholder: 请输入
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 错误信息
+      description: 日志/信息输出
+      render: shell
+      placeholder: 请输入
+    validations:
+      required: false

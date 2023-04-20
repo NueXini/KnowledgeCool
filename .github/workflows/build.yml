@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    paths-ignore:
+      - "**.md"
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              name: linux_ARMv7,
+              c_compiler: gcc-arm-linux-gnueabihf,
+              cxxcompiler: g++-arm-linux-gnueabihf,
+            }
+          - {
+              name: linux_ARMv8,
+              c_compiler: gcc-12-aarch64-linux-gnu,
+              cxxcompiler: g++-12-aarch64-linux-gnu,
+            }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y autoconf automake build-essential cmake libssl-dev
+
+      - name: Install cross-compiler
+        run: |
+          sudo apt-get install -y ${{ matrix.config.c_compiler }} ${{ matrix.config.cxx_compiler }}
+          export CC=/usr/bin/${{ matrix.config.c_compiler }} CXX=/usr/bin/${{ matrix.config.cxx_compiler }}
+
+      - name: Build project
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+          make
