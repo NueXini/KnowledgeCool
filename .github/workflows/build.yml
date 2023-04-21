@@ -45,7 +45,7 @@ jobs:
           mkdir build
           cd build
           cmake .. \
-            -DCMAKE_C_COMPILER=$/usr/bin/{{ matrix.config.c_compiler }} \
+            -DCMAKE_C_COMPILER=$/usr/bin/${{ matrix.config.c_compiler }} \
             -DCMAKE_CXX_COMPILER=/usr/bin/${{ matrix.config.cxx_compiler }} \
             -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
           make
