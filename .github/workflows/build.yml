@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@main
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y autoconf automake build-essential cmake libssl-dev
+        run: sudo apt-get update && sudo apt-get install -y cmake libssl-dev
 
       - name: Install cross-compiler
         run: |
@@ -51,5 +51,5 @@ jobs:
           cmake .. \
             -DCMAKE_C_COMPILER=/usr/bin/${{ matrix.config.c_flag }} \
             -DCMAKE_CXX_COMPILER=/usr/bin/${{ matrix.config.cxx_flag }} \
-            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
           make

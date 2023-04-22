@@ -93,13 +93,35 @@ void Handle::yfzxmn(const httplib::Request &req, httplib::Response &res)
         }
       }
     }
+
+    /*
+     * Register
+     */
+
     // type=getsmscode&phone=
     if (type == "getsmscode")
     {
       if (req.has_param("phone"))
       {
         auto phone = req.get_param_value("phone");
-        if (std::regex_match(phone, std::regex(R"(^1[3456789]\d{9}$)")))
+        if (std::regex_match(phone, std::regex(PhonePattern)))
+        {
+          httplib::Headers headers = {{"User-Agent", UserAgent}};
+          auto _res = _cli.Get("/user_checkUsTel.action?usertab.us_tel=" + phone, headers);
+          if (_res && _res->status == 200)
+          {
+            res.set_content(_res->body, "text/plain");
+          }
+        }
+      }
+    }
+    // type=getsmscode&phone=
+    if (type == "register")
+    {
+      if (req.has_param("phone"))
+      {
+        auto phone = req.get_param_value("phone");
+        if (std::regex_match(phone, std::regex(PhonePattern)))
         {
           httplib::Headers headers = {{"User-Agent", UserAgent}};
           auto _res = _cli.Get("/user_checkUsTel.action?usertab.us_tel=" + phone, headers);
@@ -111,4 +133,3 @@ void Handle::yfzxmn(const httplib::Request &req, httplib::Response &res)
       }
     }
   }
-}
