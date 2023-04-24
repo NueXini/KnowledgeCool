@@ -98,8 +98,8 @@ void Handle::yfzxmn(const httplib::Request &req, httplib::Response &res)
      * Register
      */
 
-    // type=getsmscode&phone=
-    if (type == "getsmscode")
+    // type=checkphone&phone=
+    if (type == "checkphone")
     {
       if (req.has_param("phone"))
       {
@@ -110,12 +110,35 @@ void Handle::yfzxmn(const httplib::Request &req, httplib::Response &res)
           auto _res = _cli.Get("/user_checkUsTel.action?usertab.us_tel=" + phone, headers);
           if (_res && _res->status == 200)
           {
+            /*
+             * {"status":"true","error":"","end":"1"}
+             * {"status":"false","result":"请输入正确的手机号！","error":"","end":"1"}
+             * {"status":"false","result":"手机号已注册！","error":"","end":"1"}
+             */
             res.set_content(_res->body, "text/plain");
           }
         }
       }
     }
-    // type=getsmscode&phone=
+    // type=sendsms&phone=
+    if (type == "sendsms")
+    {
+      if (req.has_param("phone"))
+      {
+        auto phone = req.get_param_value("phone");
+        if (std::regex_match(phone, std::regex(PhonePattern)))
+        {
+          httplib::Headers headers = {{"User-Agent", UserAgent}};
+          auto _res = _cli.Get("/user_sendSMS.action?phone=" + phone, headers);
+          if (_res && _res->status == 200)
+          {
+            // {"status":"true","error":"","end":"1"}
+            res.set_content(_res->body, "text/plain");
+          }
+        }
+      }
+    }
+    // type=register&phone=&password=&code=
     if (type == "register")
     {
       if (req.has_param("phone"))
@@ -123,13 +146,45 @@ void Handle::yfzxmn(const httplib::Request &req, httplib::Response &res)
         auto phone = req.get_param_value("phone");
         if (std::regex_match(phone, std::regex(PhonePattern)))
         {
-          httplib::Headers headers = {{"User-Agent", UserAgent}};
-          auto _res = _cli.Get("/user_checkUsTel.action?usertab.us_tel=" + phone, headers);
-          if (_res && _res->status == 200)
+          if (req.has_param("code"))
           {
-            res.set_content(_res->body, "text/plain");
+            auto code = req.get_param_value("code");
+            if (req.has_param("password"))
+            {
+              auto password = req.get_param_value("password");
+              if (std::regex_match(password, std::regex(PasswordPattern)))
+              {
+                httplib::Headers headers = {
+                    {"User-Agent", UserAgent},
+                    {"Referer", "https://www.yfzxmn.cn/register.jsp"},
+                    {"Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"},
+                };
+                httplib::Params params = {
+                    {"usertab.us_tel", phone},
+                    {"code", code},
+                    {"usertab.us_password", password},
+                    {"txtUser", password},
+                };
+                auto _res = _cli.Post("/user_register.action", headers, params);
+                if (_res && _res->status == 200)
+                {
+                  /*
+                   * {"result":"手机验证码错误","error":"","end":"1"}
+                   * {"status":"true","error":"","end":"1"}
+                   */
+                  res.set_content(_res->body, "text/plain");
+                }
+              }
+            }
           }
         }
       }
     }
+
+    /*
+     * Login
+     */
+
+    // type=login&phone=&password=&code=
   }
+}

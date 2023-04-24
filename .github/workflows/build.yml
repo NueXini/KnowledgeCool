@@ -42,7 +42,7 @@ jobs:
         run: |
           sudo apt-get install -y ${{ matrix.config.c_compiler }} ${{ matrix.config.cxx_compiler }}
           export CC=/usr/bin/${{ matrix.config.c_flag }} CXX=/usr/bin/${{ matrix.config.cxx_flag }}
-          export CMAKE_INCLUDE_PATH=/usr/include
+          export CPLUS_INCLUDE_PATH=/usr/include:${CPLUS_INCLUDE_PATH}
 
       - name: Build project
         run: |
@@ -51,5 +51,14 @@ jobs:
           cmake .. \
             -DCMAKE_C_COMPILER=/usr/bin/${{ matrix.config.c_flag }} \
             -DCMAKE_CXX_COMPILER=/usr/bin/${{ matrix.config.cxx_flag }} \
-            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DCMAKE_C_FLAGS="-I/usr/include" \
+            -DCMAKE_CXX_FLAGS="-I/usr/include" \
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=bin/
           make
+
+      - name: Upload
+        uses: actions/upload-artifact@main
+        with:
+          name: KnowledgeCool_${{ matrix.config.name }}
+          path: build/bin
