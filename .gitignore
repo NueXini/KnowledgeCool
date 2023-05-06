@@ -1,2 +1,21 @@
 .vscode
 build
+KnowledgeCool.exe
+
+### CMake ###
+.cmake
+CMakeFiles
+cmake_install.cmake
+CMakeCache.txt
+compile_commands.json
+CMakeLists.txt.user
+CMakeScripts
+Testing
+Makefile
+install_manifest.txt
+CTestTestfile.cmake
+_deps
+
+### CMake Patch ###
+# External projects
+*-prefix/
