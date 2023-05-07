@@ -10,6 +10,8 @@ endif()
 
 add_executable(${PROJECT_NAME}
   src/handle/handle.cpp
+  src/utils/base64/base64.cpp
+  src/utils/crypto/crypto.cpp
   src/main.cpp
 )
 
