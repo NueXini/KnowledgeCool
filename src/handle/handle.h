@@ -5,7 +5,14 @@
 #include <regex>
 #include <ctime>
 #define CPPHTTPLIB_OPENSSL_SUPPORT
+
 #include "httplib/httplib.h"
+
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
+#include "../utils/crypto/crypto.h"
 
 class Handle
 {
