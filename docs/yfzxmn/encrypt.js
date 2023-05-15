@@ -5,7 +5,7 @@
  * var data = des.encrypt(JSON.stringify(user));
  * 
  * 测试用例 结果
- * user = "{us_name: '10086', us_password: '10086', code: '4521'}"；
+ * user = "{us_name: '10086', us_password: '10086', code: '4521'}";
  * data = Dvd10hf+PZvzUVY3TDxQ/M+xml8NLiwVD5PavfZMJpanoWIHMp8cn8dHFoTCVLrKYUQjNOS6H+g=;
  * aseKey = "passwordyf005450";
  * des.aseKey = "passwordyf005455";

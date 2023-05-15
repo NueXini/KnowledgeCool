@@ -17,38 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {
-              name: linux_ARMv7,
-              c_compiler: gcc-12-arm-linux-gnueabihf,
-              cxx_compiler: g++-12-arm-linux-gnueabihf,
-              c_flag: arm-linux-gnueabihf-gcc-12,
-              cxx_flag: arm-linux-gnueabihf-g++-12,
-              vcpkg: arm-linux,
-            }
-          - {
-              name: linux_ARMv8,
-              c_compiler: gcc-12-aarch64-linux-gnu,
-              cxx_compiler: g++-12-aarch64-linux-gnu,
-              c_flag: aarch64-linux-gnu-gcc-12,
-              cxx_flag: aarch64-linux-gnu-g++-12,
-              vcpkg: arm64-linux,
-            }
-          # - {
-          #     name: linux_x86,
-          #     c_compiler: gcc-12,
-          #     cxx_compiler: g++-12,
-          #     c_flag: gcc-12,
-          #     cxx_flag: g++-12,
-          #     vcpkg: x86-linux,
-          #   }
-          - {
-              name: linux_x86_64,
-              c_compiler: gcc-12,
-              cxx_compiler: g++-12,
-              c_flag: gcc-12,
-              cxx_flag: g++-12,
-              vcpkg: x64-linux-release,
-            }
+          - { name: linux_x86_64, cxx: clang++, vcpkg: x64-linux-release }
     steps:
       - name: Checkout code
         uses: actions/checkout@main
@@ -56,10 +25,12 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y cmake
 
-      - name: Install cross-compiler
+      - name: Install LLVM-MINGW
         run: |
-          sudo apt-get install -y ${{ matrix.config.c_compiler }} ${{ matrix.config.cxx_compiler }}
-          export CC=/usr/bin/${{ matrix.config.c_flag }} CXX=/usr/bin/${{ matrix.config.cxx_flag }}
+          wget https://github.com/mstorsjo/llvm-mingw/releases/download/20230504/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64.tar.xz
+          tar -xf llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64.tar.xz
+          echo "LLVM_BIN_PATH=$(pwd)/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64/bin" >> "$GITHUB_ENV"
+          export PATH=$PATH:${{ env.LLVM_BIN_PATH }}
 
       - name: Install vcpkg
         run: |
@@ -73,10 +44,10 @@ jobs:
           cd build
           cmake .. \
             -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake \
-            -DCMAKE_C_COMPILER=/usr/bin/${{ matrix.config.c_flag }} \
-            -DCMAKE_CXX_COMPILER=/usr/bin/${{ matrix.config.cxx_flag }} \
+            -DCMAKE_CXX_COMPILER=${{ env.LLVM_BIN_PATH }}/${{ matrix.config.cxx }} \
             -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=bin/
+            -DOPENSSL_ROOT_DIR=../vcpkg/packages/openssl_${{ matrix.config.vcpkg }}
           make
 
       - name: Upload
