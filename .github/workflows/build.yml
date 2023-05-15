@@ -46,7 +46,7 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake \
             -DCMAKE_CXX_COMPILER=${{ env.LLVM_BIN_PATH }}/${{ matrix.config.cxx }} \
             -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=bin/
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=bin/ \
             -DOPENSSL_ROOT_DIR=/usr/local/share/vcpkg/packages/openssl_${{ matrix.config.vcpkg }}
           make
 
