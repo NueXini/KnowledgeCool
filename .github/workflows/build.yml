@@ -36,7 +36,7 @@ jobs:
         run: |
           git clone https://github.com/Microsoft/vcpkg.git --depth=1
           echo "VCPKG_PATH=$(pwd)/vcpkg" >> "$GITHUB_ENV"
-          bash ${{ env.VCPKG_PATH }}/bootstrap-vcpkg.sh -disableMetrics
+          bash ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
           vcpkg install openssl:${{ matrix.config.vcpkg }}
 
       - name: Build project
