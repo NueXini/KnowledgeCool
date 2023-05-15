@@ -35,7 +35,8 @@ jobs:
       - name: Install vcpkg
         run: |
           git clone https://github.com/Microsoft/vcpkg.git --depth=1
-          bash ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+          echo "VCPKG_PATH=$(pwd)/vcpkg" >> "$GITHUB_ENV"
+          bash ${{ env.VCPKG_PATH }}/bootstrap-vcpkg.sh -disableMetrics
           vcpkg install openssl:${{ matrix.config.vcpkg }}
 
       - name: Build project
@@ -47,7 +48,7 @@ jobs:
             -DCMAKE_CXX_COMPILER=${{ env.LLVM_BIN_PATH }}/${{ matrix.config.cxx }} \
             -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=bin/
-            -DOPENSSL_ROOT_DIR=../vcpkg/packages/openssl_${{ matrix.config.vcpkg }}
+            -DOPENSSL_ROOT_DIR=${{ env.VCPKG_PATH }}/packages/openssl_${{ matrix.config.vcpkg }}
           make
 
       - name: Upload
