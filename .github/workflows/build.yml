@@ -29,8 +29,8 @@ jobs:
         run: |
           wget https://github.com/mstorsjo/llvm-mingw/releases/download/20230504/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64.tar.xz
           tar -xf llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64.tar.xz
+          export PATH=$PATH:$(pwd)/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64/bin
           echo "LLVM_BIN_PATH=$(pwd)/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64/bin" >> "$GITHUB_ENV"
-          export PATH=$PATH:${{ env.LLVM_BIN_PATH }}
 
       - name: Install vcpkg
         run: |

@@ -9,7 +9,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif()
 
 add_executable(${PROJECT_NAME}
-  src/handle/handle.cpp
+  src/handle/Baidu/Baidu.cpp
+  src/handle/Yinfu/Yinfu.cpp
   src/utils/base64/base64.cpp
   src/utils/crypto/crypto.cpp
   src/main.cpp
